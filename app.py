@@ -1,21 +1,23 @@
 import streamlit as st
 
-# ✅ 로그인 함수
-def check_password():
-    st.title("🔐 사내 전용 수입선반 인보이스")
-    password = st.text_input("비밀번호를 입력하세요", type="password")
-    if password == "fine123":
-        return True
-    elif password:
-        st.error("❌ 비밀번호가 올바르지 않습니다.")
-        return False
-    return False
+# 비밀번호
+CORRECT_PASSWORD = "your_password"
 
-# ✅ 인증 실패 시 앱 실행 중단
-if not check_password():
-    st.stop()
+# 세션 상태로 로그인 여부 저장
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
 
-# ✅ 로그인 성공 시 아래 내용 표시
-st.set_page_config(page_title="수입선반 인보이스")
-st.title("📄 수입선반 인보이스 자동 생성기")
-st.write("왼쪽 메뉴에서 기능을 선택하세요.")
+# 로그인 화면
+if not st.session_state["authenticated"]:
+    pw = st.text_input("비밀번호를 입력하세요", type="password")
+    if pw == CORRECT_PASSWORD:
+        st.session_state["authenticated"] = True
+        st.success("✅ 로그인 성공")
+        st.rerun()
+    elif pw:
+        st.error("❌ 비밀번호가 틀렸습니다.")
+    st.stop()  # ⛔ 여기서 앱 전체 실행을 중단함
+
+# 여기 아래부터는 비밀번호 입력 후에만 실행됨
+st.title("🔐 비공개 앱에 오신 것을 환영합니다")
+st.write("이제 자유롭게 앱 기능을 사용하실 수 있습니다.")
